@@ -1,0 +1,961 @@
+/* ===========================
+   RESET 
+=========================== */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+/* ===========================
+   FONDO GENERAL
+=========================== */
+body {
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    background: linear-gradient(
+        180deg,
+        #0A000F 0%,
+        #19001A 25%,
+        #2B0030 50%,
+        #400038 75%,
+        #4A004D 100%
+    );
+    color: white;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+/* Para que el contenido no quede debajo de la cabecera fija */
+main {
+    padding-top: 80px;
+}
+
+/* ===========================
+   CABECERA FIJA ARRIBA
+=========================== */
+.cabecera {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 100;
+}
+
+/* Barra superior */
+.navcabecera {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.75rem 1.5rem;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(10px);
+}
+
+/* Logo cabecera */
+.logocabecera {
+    height: 48px;
+    width: auto;
+}
+
+/* Botones (hamburguesa - X) */
+.botonmenu,
+.botoncerrar {
+    background: none;
+    border: none;
+    color: white;
+    cursor: pointer;
+}
+
+/* Icono hamburguesa */
+.iconomenu {
+    display: inline-block;
+    width: 24px;
+    height: 2px;
+    background: white;
+    position: relative;
+}
+
+.iconomenu::before,
+.iconomenu::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    width: 24px;
+    height: 2px;
+    background: white;
+}
+
+.iconomenu::before {
+    top: -6px;
+}
+
+.iconomenu::after {
+    top: 6px;
+}
+
+/* ===========================
+   MENÚ LATERAL DESPLEGABLE
+=========================== */
+.panelmenu {
+    position: fixed;
+    top: 0;
+    right: -320px;
+    width: 320px;
+    max-width: 80%;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.95);
+    padding: 4rem 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transition: right 0.3s ease;
+    z-index: 90;
+}
+
+.panelabierto {
+    right: 0;
+}
+
+.botoncerrar {
+    position: absolute;
+    top: 1rem;
+    right: 1.5rem;
+    font-size: 2rem;
+}
+
+.listamenu {
+    list-style: none;
+    margin-top: 2rem;
+    width: 100%;
+}
+
+.enlacemenu {
+    display: block;
+    text-decoration: none;
+    color: white;
+    font-size: 1.1rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 0.6rem 0;
+    text-align: center;
+}
+
+.enlacemenu:hover {
+    color: #ff4cff;
+}
+
+/* ===========================
+   HERO (FONDO PORSCHE)
+=========================== */
+ .hero {
+    min-height: 100vh;
+    width: 100%;
+    background-image: url("img/Porsche\(NeizanPhoto26\).jpeg");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+
+    display: flex;
+    align-items: center;
+    text-align: center;
+
+    position: relative;
+    padding: 120px 20px 60px;
+}
+
+.hero::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+}
+
+@media (min-width: 768px) {
+    .hero {
+        background-attachment: fixed;
+    }
+}
+
+.heroContenido {
+    position: relative;
+    z-index: 2;
+}
+
+.heroLogo {
+    max-width: 220px;
+    margin-bottom: 20px;
+}
+
+.heroBienvenido {
+    font-size: 16px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: #cccccc;
+    margin-bottom: 10px;
+}
+
+.heroTitulo {
+    font-size: 40px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+}
+
+.heroTexto {
+    font-size: 16px;
+    margin-bottom: 30px;
+    color: #e0e0e0;
+}
+
+.heroBoton {
+    display: inline-block;
+    padding: 12px 32px;
+    border-radius: 30px;
+    border: 1px solid #ffffff;
+    color: #ffffff;
+    text-decoration: none;
+    text-transform: uppercase;
+    font-size: 14px;
+    letter-spacing: 2px;
+    transition: all 0.2s ease-in-out;
+}
+
+.heroBoton:hover {
+    background-color: #ff00ff;
+    border-color: #ff00ff;
+}
+
+/* HERO MOVIL - Imagen optimizada */
+@media (max-width: 576px) {
+    .hero {
+        background-image: url("img/Porsche\(ImagenMovil\).jpeg"); 
+        background-size: cover;
+        background-position: center top;
+    }
+}
+
+
+/* ===========================
+   SECCIÓN RESERVA
+=========================== */
+.reserva {
+    padding: 80px 20px;
+    background-color: #050007;
+}
+
+.reservaCaja {
+    width: 100%;
+    background: rgba(10, 0, 20, 0.92);
+    border-radius: 16px;
+    padding: 35px 25px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.7);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.reservaTitulo {
+    font-size: 26px;
+    text-align: center;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+.reservaTexto {
+    text-align: center;
+    font-size: 14px;
+    margin-bottom: 25px;
+    color: #d0d0d0;
+}
+
+.reservaForm {
+    width: 100%;
+}
+
+.campoGrupo {
+    margin-bottom: 18px;
+}
+
+.campoLabel {
+    display: block;
+    font-size: 13px;
+    margin-bottom: 6px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #bbbbbb;
+}
+
+.campoInput {
+    width: 100%;
+    padding: 10px 12px;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    background-color: rgba(5, 0, 10, 0.9);
+    color: #ffffff;
+    font-size: 14px;
+}
+
+.campoInput:focus {
+    outline: none;
+    border-color: #ff00ff;
+    box-shadow: 0 0 0 2px rgba(255, 0, 255, 0.3);
+}
+
+.campoTextarea {
+    min-height: 90px;
+    resize: vertical;
+}
+
+.reservaBoton {
+    width: 100%;
+    padding: 12px;
+    border-radius: 30px;
+    border: none;
+    background: linear-gradient(90deg, #ff00ff, #ff5dfc);
+    color: #ffffff;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.reservaBoton:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 10px 20px rgba(255, 0, 255, 0.4);
+}
+
+/* ===========================
+   RESPONSIVE
+=========================== */
+@media (max-width: 576px) {
+    .heroTitulo {
+        font-size: 30px;
+    }
+
+    .reservaCaja {
+        padding: 25px 18px;
+    }
+}
+
+/* ===========================
+   SECCIÓN FOTOS
+=========================== */
+.fotos {
+    padding: 104px 12px 88px;
+    text-align: center;
+    background:
+        radial-gradient(circle at top, rgba(121, 0, 137, 0.12), transparent 28%),
+        linear-gradient(180deg, #040005 0%, #09000d 100%);
+}
+
+.fotos .container {
+    max-width: 1460px;
+}
+
+.fotosTitulo {
+    font-size: 30px;
+    margin-bottom: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+}
+
+.fotosSubtitulo {
+    margin-top: 72px;
+    margin-bottom: 12px;
+    font-size: 22px;
+    text-transform: uppercase;
+    letter-spacing: 0.24em;
+}
+
+.fotosTexto {
+    max-width: 760px;
+    margin: 0 auto 18px;
+    font-size: 13px;
+    color: #c8c8c8;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.fotosInfo {
+    max-width: 1400px;
+    margin: 0 auto 28px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+    text-align: center;
+}
+
+.fotosEyebrow {
+    margin: 0 0 6px;
+    font-size: 10px;
+    letter-spacing: 0.42em;
+    text-transform: uppercase;
+    color: #ff8fff;
+}
+
+.fotosHint {
+    margin: 0;
+    font-size: 11px;
+    color: #c4b4c7;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+}
+
+.fotosGrid {
+    width: 100%;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.fotosGridDestacadas {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 12px;
+}
+
+.fotosGrid:not(.fotosGridDestacadas) {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 12px;
+}
+
+.fotoItem {
+    position: relative;
+    overflow: hidden;
+    border-radius: 2px;
+    display: block;
+    background: #0d0d0d;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.18);
+    isolation: isolate;
+}
+
+.fotosGridDestacadas .fotoItem {
+    aspect-ratio: 0.76;
+}
+
+.fotosGrid:not(.fotosGridDestacadas) .fotoItem {
+    aspect-ratio: 0.9;
+}
+
+.fotoItemDestacada {
+    min-height: 0;
+}
+
+.fotoItem::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(0, 0, 0, 0.24));
+    opacity: 0;
+    transition: opacity 0.22s ease;
+}
+
+.fotoImg {
+    width: 100%;
+    display: block;
+    object-fit: cover;
+    transition: transform 0.55s ease, filter 0.55s ease;
+}
+
+.fotosGridDestacadas .fotoImg {
+    height: 100%;
+}
+
+.fotosGrid:not(.fotosGridDestacadas) .fotoImg {
+    height: 100%;
+}
+
+.fotoOverlay,
+.fotoTag,
+.fotoCaption,
+.lightboxCaption {
+    display: none;
+}
+
+.fotoItem:hover .fotoImg,
+.fotoItem:focus-visible .fotoImg {
+    transform: scale(1.045);
+    filter: brightness(1.03);
+}
+
+.fotoItem:hover::after,
+.fotoItem:focus-visible::after {
+    opacity: 1;
+}
+
+.fotoItem:focus-visible {
+    outline: 2px solid #ff75ff;
+    outline-offset: 3px;
+}
+
+.lightboxActive {
+    overflow: hidden;
+}
+
+.lightbox {
+    position: fixed;
+    inset: 0;
+    z-index: 300;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    background: rgba(3, 0, 6, 0.94);
+    backdrop-filter: blur(18px);
+}
+
+.lightboxOpen {
+    display: flex;
+}
+
+.lightboxFigure {
+    margin: 0;
+    max-width: min(1240px, 100%);
+    max-height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.lightboxImg {
+    width: auto;
+    max-width: 100%;
+    max-height: 84vh;
+    border-radius: 4px;
+    box-shadow: 0 24px 70px rgba(0, 0, 0, 0.45);
+}
+
+.lightboxClose,
+.lightboxNav {
+    position: absolute;
+    border: 0;
+    color: #ffffff;
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(10px);
+    cursor: pointer;
+}
+
+.lightboxClose {
+    top: 18px;
+    right: 18px;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    font-size: 28px;
+    line-height: 1;
+}
+
+.lightboxNav {
+    top: 50%;
+    transform: translateY(-50%);
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    font-size: 22px;
+}
+
+.lightboxPrev {
+    left: 18px;
+}
+
+.lightboxNext {
+    right: 18px;
+}
+
+@media (max-width: 991px) {
+    .fotosGridDestacadas {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .fotosGrid:not(.fotosGridDestacadas) {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 12px;
+    }
+}
+
+@media (max-width: 767px) {
+    .fotos {
+        padding: 72px 10px 64px;
+    }
+
+    .fotosTitulo {
+        font-size: 24px;
+        letter-spacing: 0.16em;
+    }
+
+    .fotosTexto {
+        font-size: 11px;
+        letter-spacing: 0.12em;
+    }
+
+    .fotosSubtitulo {
+        margin-top: 48px;
+        font-size: 18px;
+        letter-spacing: 0.18em;
+    }
+
+    .fotosHint {
+        font-size: 10px;
+        letter-spacing: 0.14em;
+    }
+
+    .fotosGridDestacadas {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 6px;
+    }
+
+    .fotosGrid:not(.fotosGridDestacadas) {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 6px;
+    }
+
+    .fotosGrid:not(.fotosGridDestacadas) .fotoItem {
+        aspect-ratio: 0.82;
+    }
+
+    .lightbox {
+        padding: 16px 10px 24px;
+    }
+
+    .lightboxImg {
+        max-height: 70vh;
+    }
+
+    .lightboxNav {
+        width: 42px;
+        height: 42px;
+        font-size: 18px;
+        bottom: 14px;
+        top: auto;
+        transform: none;
+    }
+
+    .lightboxPrev {
+        left: calc(50% - 52px);
+    }
+
+    .lightboxNext {
+        right: calc(50% - 52px);
+    }
+}
+
+@media (max-width: 576px) {
+    .fotosInfo {
+        margin-bottom: 20px;
+    }
+
+    .fotosEyebrow {
+        letter-spacing: 0.28em;
+    }
+
+    .fotosGridDestacadas {
+        gap: 4px;
+    }
+
+    .fotosGrid:not(.fotosGridDestacadas) {
+        gap: 4px;
+    }
+
+    .fotosGrid:not(.fotosGridDestacadas) .fotoItem {
+        aspect-ratio: 0.8;
+    }
+}
+
+/* ===========================
+   SERVICIOS MOTOS
+=========================== */
+.serviciosMotos {
+    padding: 80px 20px;
+    background-color: #050007;
+}
+
+.serviciosTitulo {
+    text-align: center;
+    font-size: 32px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    margin: 70px 0 40px;  
+}
+
+/* Contenedor de todos los servicios */
+.serviciosLista {
+    max-width: 1100px;
+    margin: 0 auto;
+}
+
+/* Cada servicio (fila) */
+.servicioItem {
+    display: grid;
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+    gap: 20px;
+    align-items: center;
+}
+
+/* Imagen del servicio */
+.servicioImg {
+    width: 100%;
+    max-width: 350px;
+    height: auto;
+    object-fit: contain;
+    border-radius: 12px;
+    filter: drop-shadow(0 0 6px #4e284e);
+    display: block;
+}
+
+/* Texto del servicio */
+.servicioTexto {
+    border-top: 1px solid rgba(255,255,255,0.4);
+    padding-top: 15px;
+}
+
+.servicioNombre {
+    font-size: 20px;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+}
+
+.servicioPrecio {
+    font-size: 14px;
+    margin-bottom: 8px;
+    font-weight: 600;
+}
+
+.servicioDetalles {
+    list-style: none;
+    font-size: 14px;
+    color: #d0d0d0;
+}
+
+.servicioDetalles li {
+    margin-bottom: 3px;
+}
+
+@media (max-width: 768px) {
+    .servicioItem {
+        grid-template-columns: 1fr;
+    }
+
+    .servicioImg {
+        max-width: 100%;
+        height: auto;
+    }
+}
+
+/* ===========================
+   SECCIÓN SOBRE MÍ
+=========================== */
+.sobreMi {
+    padding: 80px 20px;
+    background-color: #050007;
+}
+
+.sobreMiContenido {
+    max-width: 900px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.sobreMiTitulo {
+    font-size: 28px;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    margin-bottom: 15px;
+}
+
+.sobreMiTitulo::after {
+    content: "";
+    display: block;
+    width: 70px;
+    height: 2px;
+    margin: 10px auto 0;
+    background: rgba(255, 255, 255, 0.4);
+}
+
+.sobreMiTexto {
+    font-size: 15px;
+    color: #d0d0d0;
+    line-height: 1.7;
+    max-width: 650px;
+    margin: 0 auto;
+}
+
+/* ===========================
+   FOOTER CONTACTO 
+=========================== */
+
+.footer {
+    background-color: #040005;
+    padding: 45px 20px 35px;
+    border-top: 4px solid #790089;  
+}
+
+/* Contenedor principal */
+.footerContainer {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+    align-items: center;
+}
+
+/* Fila superior */
+.footerTop {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 40px;
+    justify-content: center;
+    align-items: center;
+}
+
+.footerItem {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 17px;   
+    color: #ffffff;
+    opacity: 0.9;
+}
+
+.footerIcon {
+    width: 26px;   
+    height: auto;
+    filter: drop-shadow(0 0 6px #ff00ff);
+}
+
+/* Enlaces */
+.footerText,
+.footerLink {
+    color: #ffffff;
+    text-decoration: none;
+    font-size: 17px;  
+    opacity: 0.9;
+}
+
+.footerText:hover,
+.footerLink:hover {
+    opacity: 1;
+    text-decoration: underline;
+}
+
+/* Fila inferior */
+.footerBottom {
+    font-size: 15px; 
+    color: #d8d8d8;
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    align-items: center;
+}
+
+.footerSeparator {
+    opacity: 0.6;
+}
+
+.footerBar {
+    height: 8px;
+    background: #790089;
+}
+
+
+/* ===========================
+   COOKIES 
+=========================== */
+.cookie-banner {
+    position: fixed;
+    bottom: 10px;
+    left: 10px;
+    right: 10px;
+    padding: 10px 15px;
+    background: rgba(0,0,0,0.9);
+    border-radius: 10px;
+    font-size: 13px;
+    display: none;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    z-index: 200;
+}
+
+.cookie-banner button {
+    border: none;
+    padding: 6px 14px;
+    border-radius: 20px;
+    cursor: pointer;
+    text-transform: uppercase;
+    font-size: 11px;
+}
+
+/* ===========================
+   PÁGINA DE PRIVACIDAD
+=========================== */
+
+.privacy-main {
+    padding-top: 120px;   
+    padding-bottom: 80px;
+}
+
+.privacy-wrapper {
+    max-width: 900px;
+    margin: 0 auto;
+    background: rgba(10, 0, 20, 0.95);
+    border-radius: 16px;
+    padding: 35px 25px 45px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.7);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.privacy-title {
+    font-size: 30px;
+    text-align: center;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    margin-bottom: 15px;
+}
+
+.privacy-intro {
+    font-size: 14px;
+    color: #d0d0d0;
+    text-align: center;
+    max-width: 650px;
+    margin: 0 auto 25px;
+}
+
+.privacy-section {
+    margin-top: 25px;
+}
+
+.privacy-section h2 {
+    font-size: 20px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 8px;
+}
+
+.privacy-section p,
+.privacy-section ul {
+    font-size: 14px;
+    color: #e0e0e0;
+    line-height: 1.7;
+}
+
+.privacy-section ul {
+    padding-left: 1.2rem;
+    margin-bottom: 10px;
+}
+
+.privacy-section li {
+    margin-bottom: 4px;
+}
+
+.privacy-wrapper a {
+    color: #ff82ff;
+    text-decoration: none;
+}
+
+.privacy-wrapper a:hover {
+    text-decoration: underline;
+}
+
+
