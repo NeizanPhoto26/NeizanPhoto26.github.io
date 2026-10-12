@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reseñas de clientes | Neizan Photo 26</title>
+    <meta name="description" content="Lee las experiencias y valoraciones de las sesiones de Neizan Photo 26 y comparte tu reseña.">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="Style.css">
+    <link rel="icon" href="img/optimized/logos-LogoNeizanPhoto-64.png" type="image/png">
+</head>
+<body class="reviewsPage">
+    <header class="cabecera"><nav class="navcabecera" aria-label="Menú principal">
+        <a href="index.html#inicio" class="logolink"><img src="img/optimized/logos-LogoNeizanPhoto-256.png" alt="Neizan Photo 26" class="logocabecera" width="256" height="256"></a>
+        <a href="index.html#reserva" class="heroBoton cabeceraReserva">Reserva tu sesión</a>
+    </nav></header>
+    <main>
+        <section class="resenas" id="resenas" data-view="all" aria-labelledby="resenasTitulo">
+            <div class="container resenasContenido">
+                <a class="reviewsBack" href="index.html#resenas">← Volver a la web</a>
+                <p class="seccionEtiqueta">DESPUÉS DE LA SESIÓN</p>
+                <h2 id="resenasTitulo" class="sobreMiTitulo">Todas las reseñas</h2>
+                <p id="reviewsSummary" class="reviewsSummary" hidden></p>
+                <p id="reviewsStatus" class="sobreMiTexto" role="status">Las reseñas estarán disponibles próximamente.</p>
+                <div id="reviewsList" class="reviewsList"></div>
+                <a id="reviewsAll" class="heroBoton" href="Resenas.html" hidden>Ver todas las reseñas</a>
+                <button id="reviewsMore" type="button" class="heroBoton" hidden>Ver más reseñas</button>
+                <details class="reviewWrite">
+                    <summary class="heroBoton">Escribe tu reseña</summary>
+                    <form id="reviewForm" class="reservaCaja reviewForm">
+                        <h3>¿Qué tal tu sesión?</h3>
+                        <p class="reservaTexto">Comparte tu experiencia. Sin crear una cuenta.</p>
+                        <div class="campoGrupo"><label for="reviewName" class="campoLabel">Tu nombre</label><input id="reviewName" name="reviewName" class="campoInput" type="text" autocomplete="given-name" minlength="2" maxlength="60" placeholder="El nombre que se mostrará" required></div>
+                        <fieldset class="reviewRating"><legend class="campoLabel">Tu valoración</legend><div class="ratingOptions">
+                            <label class="ratingOption"><input type="radio" name="reviewRating" value="1" required><span aria-hidden="true">★</span><span class="visually-hidden">1 estrella</span></label>
+                            <label class="ratingOption"><input type="radio" name="reviewRating" value="2"><span aria-hidden="true">★</span><span class="visually-hidden">2 estrellas</span></label>
+                            <label class="ratingOption"><input type="radio" name="reviewRating" value="3"><span aria-hidden="true">★</span><span class="visually-hidden">3 estrellas</span></label>
+                            <label class="ratingOption"><input type="radio" name="reviewRating" value="4"><span aria-hidden="true">★</span><span class="visually-hidden">4 estrellas</span></label>
+                            <label class="ratingOption"><input type="radio" name="reviewRating" value="5"><span aria-hidden="true">★</span><span class="visually-hidden">5 estrellas</span></label>
+                        </div><p id="ratingHint" class="formNota">Elige de 1 a 5 estrellas</p></fieldset>
+                        <div class="campoGrupo"><label for="reviewComment" class="campoLabel">Tu experiencia</label><textarea id="reviewComment" name="reviewComment" class="campoInput campoTextarea" minlength="10" maxlength="1000" rows="4" placeholder="¿Qué te ha gustado de la sesión o de tus fotos?" required></textarea></div>
+                        <div class="campoGrupo"><label for="reviewPhotos" class="campoLabel">Fotos de tu sesión <span>(opcional)</span></label><input id="reviewPhotos" class="campoInput" type="file" accept="image/jpeg,image/png,image/webp" multiple aria-describedby="reviewPhotosHint"><p id="reviewPhotosHint" class="formNota">Hasta 3 fotos JPG, PNG o WebP. Las comprimimos antes de enviarlas.</p><div id="reviewPhotoPreview" class="reviewPhotos"></div></div>
+                        <div class="reviewTrap" aria-hidden="true"><label for="reviewWebsite">Web</label><input id="reviewWebsite" name="website" type="text" tabindex="-1" autocomplete="off"></div>
+                        <label class="privacidadConsentimiento"><input type="checkbox" name="reviewConsent" required><span>Acepto publicar mi nombre, valoración, comentario y las fotos que adjunte. Tengo permiso para compartirlas y acepto la <a href="Privacidad.html#privacidad-resenas">política de privacidad</a>.</span></label>
+                        <button id="reviewSubmit" type="submit" class="reservaBoton" disabled>Enviar mi reseña</button>
+                        <p class="formNota">Tu reseña se publica al enviarla. Podemos retirar spam o contenido ajeno a una sesión.</p>
+                        <p id="reviewFeedback" class="reviewFeedback" role="status" aria-live="polite"></p>
+                        <p class="formNota">Podrás eliminar tu reseña desde este mismo navegador mientras conserves sus datos.</p>
+                    </form>
+                </details>
+                <div id="reviewDeletePanel" class="reservaCaja reviewDeletePanel" hidden>
+                    <h3>Eliminar mi reseña</h3>
+                    <p>Tu reseña y sus fotos se borrarán de forma permanente. ¿Quieres continuar?</p>
+                    <button id="reviewConfirmDelete" class="heroBoton" type="button">Eliminar mi reseña</button>
+                    <button id="reviewCancelDelete" class="heroBoton" type="button">Cancelar</button>
+                    <p id="reviewDeleteFeedback" class="reviewFeedback" role="status"></p>
+                </div>
+                <noscript><p>Activa JavaScript para consultar y enviar reseñas.</p></noscript>
+            </div>
+        </section>
+
+    </main>
+    <dialog id="reviewPhotoViewer" class="reviewPhotoDialog" aria-label="Foto de la reseña">
+        <button id="reviewPhotoClose" class="lightboxClose" type="button" aria-label="Cerrar foto"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
+        <img id="reviewPhotoFull" alt="" decoding="async">
+    </dialog>
+    <footer class="footer"><div class="footerContainer"><div class="footerBottom"><span>© 2026 Neizan Photo 26</span><a class="footerLink" href="Privacidad.html">Política de privacidad</a></div></div></footer>
+    <script src="reviews-config.js" defer></script>
+    <script src="reviews.js" defer></script>
+</body>
+</html>
