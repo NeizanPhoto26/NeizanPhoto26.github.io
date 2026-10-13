@@ -49,11 +49,16 @@
                 <div id="reviewsList" class="reviewsList"></div>
                 <a id="reviewsAll" class="heroBoton" href="Resenas.html" hidden>Ver todas las reseñas</a>
                 <button id="reviewsMore" type="button" class="heroBoton" hidden>Ver más reseñas</button>
+                <div id="reviewAccount" class="reviewAccount" hidden>
+                    <p id="reviewAccountStatus">Inicia sesión para gestionar tus reseñas.</p>
+                    <button id="reviewGoogleLogin" type="button" class="heroBoton" disabled>Continuar con Google</button>
+                    <button id="reviewGoogleLogout" type="button" class="heroBoton" hidden>Cerrar sesión</button>
+                </div>
                 <details class="reviewWrite">
                     <summary class="heroBoton">Escribe tu reseña</summary>
                     <form id="reviewForm" class="reservaCaja reviewForm">
                         <h3>¿Qué tal tu sesión?</h3>
-                        <p class="reservaTexto">Comparte tu experiencia. Sin crear una cuenta.</p>
+                        <p id="reviewAccountNote" class="reservaTexto">Comparte tu experiencia.</p>
                         <div class="campoGrupo"><label for="reviewName" class="campoLabel">Tu nombre</label><input id="reviewName" name="reviewName" class="campoInput" type="text" autocomplete="given-name" minlength="2" maxlength="60" placeholder="El nombre que se mostrará" required></div>
                         <fieldset class="reviewRating"><legend class="campoLabel">Tu valoración</legend><div class="ratingOptions">
                             <label class="ratingOption"><input type="radio" name="reviewRating" value="1" required><span aria-hidden="true">★</span><span class="visually-hidden">1 estrella</span></label>
@@ -70,7 +75,7 @@
                         <button id="reviewSubmit" type="submit" class="reservaBoton" disabled>Enviar mi reseña</button>
                         <p class="formNota">Tu reseña se publica al enviarla. Podemos retirar spam o contenido ajeno a una sesión.</p>
                         <p id="reviewFeedback" class="reviewFeedback" role="status" aria-live="polite"></p>
-                        <p class="formNota">Podrás eliminar tu reseña desde este mismo navegador mientras conserves sus datos.</p>
+                        <p id="reviewOwnershipHint" class="formNota">Podrás editar o eliminar tu reseña desde este mismo navegador mientras conserves sus datos.</p>
                     </form>
                 </details>
                 <div id="reviewDeletePanel" class="reservaCaja reviewDeletePanel" hidden>
@@ -94,6 +99,7 @@
     <footer class="footer"><div class="footerContainer"><div class="footerBottom"><span>© 2026 Neizan Photo 26</span><a class="footerLink" href="Privacidad.html">Política de privacidad</a></div></div></footer>
     <script src="site-ui.js" defer></script>
     <script src="reviews-config.js" defer></script>
+    <script src="review-auth.js" defer></script>
     <script src="reviews.js" defer></script>
 </body>
 </html>

@@ -17,6 +17,9 @@
     const config = window.REVIEWS_CONFIG || {};
     const url = (config.supabaseUrl || '').replace(/\/$/, '');
     const key = config.publishableKey || '';
+    let accountOwned = new Set();
+    let authGeneration = 0;
+    let currentAccountId = null;
     const storageKey = `neizan-review-links:${url}`;
     let owned = {};
     try { owned = JSON.parse(localStorage.getItem(storageKey) || '{}') || {}; } catch { /* El enlace también se puede copiar. */ }
@@ -173,7 +176,32 @@
     document.getElementById('reviewPhotoClose').addEventListener('click', () => photoDialog.close());
     photoDialog.addEventListener('click', event => { if (event.target === photoDialog) photoDialog.close(); });
     photoDialog.addEventListener('close', () => { photoFull.src = ''; viewerPhotos = []; document.body.classList.remove('lightboxActive'); });
-    const validOwner = owner => owner && /^[0-9a-f-]{36}$/.test(owner.id) && /^[a-f0-9]{64}$/.test(owner.token);
+    const validOwner = owner => owner && /^[0-9a-f-]{36}$/.test(owner.id) && (accountOwned.has(owner.id) || (!config.googleEnabled && /^[a-f0-9]{64}$/.test(owner.token)));
+    async function syncAccount() {
+        const generation = ++authGeneration;
+        accountOwned = new Set();
+        if (!window.reviewAuth?.session) { if (config.googleEnabled) loadReviews(true); return; }
+        try {
+            // Solo vincular las reseñas que este navegador puede demostrar que publicó.
+            for (const owner of Object.values(owned).slice(0, 50)) {
+                if (!/^[0-9a-f-]{36}$/.test(owner.id) || !/^[a-f0-9]{64}$/.test(owner.token)) continue;
+                if (generation !== authGeneration) return;
+                await request('rpc/claim_my_review', { method: 'POST', body: JSON.stringify({ p_id: owner.id, p_token: owner.token }) });
+            }
+            const ids = await request('rpc/my_review_ids', { method: 'POST', body: '{}' });
+            if (generation !== authGeneration) return;
+            accountOwned = new Set(ids.map(row => row.id));
+            loadReviews(true);
+        } catch { document.getElementById('reviewAccountStatus').textContent = 'La sesión está iniciada, pero no se pudieron recuperar tus reseñas. Recarga para volver a intentarlo.'; }
+    }
+    document.addEventListener('review-auth-changed', () => {
+        const accountId = window.reviewAuth?.session?.user?.id || null;
+        // Renovar el token no debe borrar una edición que esté escribiendo el cliente.
+        if (accountId === currentAccountId) return;
+        currentAccountId = accountId;
+        if (!submit.disabled) { resetEditor(); feedback.textContent = ''; }
+        syncAccount();
+    });
     function remember(owner) {
         owned[owner.id] = owner;
         try { localStorage.setItem(storageKey, JSON.stringify(owned)); } catch { /* No impedir el envío si el navegador bloquea el almacenamiento. */ }
@@ -228,7 +256,7 @@
             const response = await fetch(`${url}/rest/v1/${path}`, {
                 ...options,
                 signal: controller.signal,
-                headers: { apikey: key, 'Content-Type': 'application/json', ...options.headers }
+                headers: { apikey: key, 'Content-Type': 'application/json', ...(window.reviewAuth?.session?.access_token ? { Authorization: `Bearer ${window.reviewAuth.session.access_token}` } : {}), ...options.headers }
             });
             // Supabase puede devolver 201 sin cuerpo con return=minimal.
             const body = await response.text();
@@ -302,7 +330,7 @@
             });
             card.append(viewPhotos, photos);
         }
-        const owner = owned[review.id];
+        const owner = accountOwned.has(review.id) ? { id: review.id, token: '' } : (config.googleEnabled ? null : owned[review.id]);
         if (validOwner(owner)) {
             const actions = document.createElement('div');
             actions.className = 'reviewOwnerActions';
@@ -384,6 +412,7 @@
     form.addEventListener('submit', async event => {
         event.preventDefault();
         if (!configured || submit.disabled) return;
+        if (config.googleEnabled && !window.reviewAuth?.session) { window.showNoticePopup?.('Inicia sesión con Google', 'Usa tu cuenta para publicar y gestionar tu reseña cuando quieras.'); return; }
         const data = new FormData(form);
         if (data.get('website')) return; // Campo señuelo para bots básicos.
         const name = String(data.get('reviewName') || '').trim();
@@ -430,6 +459,7 @@
             window.showSuccessPopup?.(isEditing ? '¡Cambios guardados!' : '¡Gracias por tu reseña!', isEditing ? 'Tu reseña ya muestra los cambios que has hecho.' : 'Tu reseña se ha publicado. Gracias por compartir tu experiencia con Neizan Photo 26.');
             loadReviews(true);
             loadSummary();
+            if (config.googleEnabled) syncAccount();
         } catch (error) {
             feedback.textContent = error.code === 'PGRST202'
                 ? (editingOwner ? 'La edición todavía no está activada. Contacta con Neizan o inténtalo más tarde.' : 'El envío todavía no está actualizado. Contacta con Neizan o inténtalo más tarde.')

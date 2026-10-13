@@ -847,10 +847,19 @@ main {
 .reviewOwnerActions { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; }
 .successPopup { position: fixed; inset: 0; margin: auto; width: min(440px, 92vw); border: 1px solid #b83acb; padding: 38px 28px 28px; border-radius: 24px; background: radial-gradient(ellipse at top, #3b0b48, #100519 65%); color: #ffffff; text-align: center; box-shadow: 0 24px 100px #0009; }
 .successPopup::backdrop { background: rgba(3,0,6,.8); backdrop-filter: blur(6px); }
+.successPopup[open] { animation: popupAppear .32s cubic-bezier(.2,.8,.2,1) both; }
+.successPopup[open]::backdrop { animation: popupBackdrop .32s ease both; }
+@keyframes popupAppear { from { opacity: 0; transform: translateY(24px) scale(.96); } to { opacity: 1; transform: translateY(0) scale(1); } }
+@keyframes popupBackdrop { from { opacity: 0; } to { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .successPopup[open], .successPopup[open]::backdrop { animation: none; } }
 .successPopupIcon { display: grid; place-items: center; margin: 0 auto 24px; width: 72px; height: 72px; border-radius: 50%; background: linear-gradient(135deg, #ff00ff, #790089); font-size: 38px; box-shadow: 0 0 36px #ff00ff40; }
 .successPopup h2 { font-size: 27px; margin-bottom: 18px; }
 .successPopup p { color: #e1d0e8; font-size: 16px; line-height: 1.7; margin-bottom: 24px; }
 .reviewEditCancel, .reviewClearPhotos { background: transparent; color: #ffb5ff; border: 1px solid #790089; padding: 10px 16px; border-radius: 20px; margin-top: 16px; font-size: 13px; }
+.reviewAccount { margin-top: 28px; padding: 24px; border: 1px solid rgba(255,255,255,.1); border-radius: 16px; background: #100519; }
+.reviewAccount p { color: #e0d0e5; line-height: 1.7; margin: 0; }
+.reviewAccount .heroBoton { margin-top: 18px; }
+.reviewAccount button:disabled { opacity: .5; cursor: wait; }
 .reviewOwnerActions button { color: #ffb5ff; background: transparent; border: 1px solid rgba(255,255,255,.2); border-radius: 20px; padding: 8px 12px; font-size: 12px; cursor: pointer; }
 .reviewExpandLink { display: block; width: fit-content; color: #ffb5ff; font-size: 13px; margin: 24px auto 0; padding: 6px 0; text-align: center; text-underline-offset: 4px; }
 .reviewExpandLink:hover { color: #ffffff; }

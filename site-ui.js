@@ -43,26 +43,5 @@
     window.showSuccessPopup = (heading, text) => showPopup(heading, text);
     window.showNoticePopup = (heading, text) => showPopup(heading, text, true);
 
-    const booking = document.querySelector('form.reservaForm');
-    if (!booking) return;
-    const feedback = document.createElement('p');
-    feedback.className = 'reviewFeedback'; feedback.setAttribute('role', 'status'); booking.append(feedback);
-    const button = booking.querySelector('button[type="submit"]');
-    booking.addEventListener('submit', async event => {
-        event.preventDefault();
-        if (button.disabled || !booking.reportValidity()) return;
-        button.disabled = true; button.textContent = 'Enviando…'; feedback.textContent = '';
-        const controller = new AbortController();
-        const timeout = setTimeout(() => controller.abort(), 20000);
-        try {
-            const response = await fetch(booking.action, { method: 'POST', body: new FormData(booking), headers: { Accept: 'application/json' }, signal: controller.signal });
-            if (!response.ok) throw new Error('No se pudo enviar');
-            booking.reset();
-            window.showSuccessPopup('¡Solicitud enviada!', 'Ya tengo tu idea. Te contactaré por email para preparar la sesión y confirmar la fecha.');
-        } catch {
-            feedback.textContent = 'No se pudo confirmar el envío. Tus datos siguen aquí; inténtalo de nuevo o escríbeme por WhatsApp.';
-        } finally {
-            clearTimeout(timeout); button.disabled = false; button.textContent = 'Hablemos de mi sesión';
-        }
-    });
+    // La reserva usa el envío HTML original a Formspree y su redirección.
 })();
