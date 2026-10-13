@@ -1132,3 +1132,7 @@ a:focus-visible, button:focus-visible, summary:focus-visible { outline: 2px soli
 }
 
 @media (max-width: 576px) { .ctaVisual { background-image: linear-gradient(90deg, rgba(10,0,20,.96), rgba(25,0,26,.6)), url('img/optimized/Porsche(NeizanPhoto26)-960.jpg'); } }
+
+/* Presentación y textos de sesiones */
+.fotosTituloDestacadas { color: #ff8fff; }
+.serviciosIntro { max-width: 720px; margin: -16px auto 32px; text-align: center; color: #d0d0d0; line-height: 1.7; padding: 0 16px; }
