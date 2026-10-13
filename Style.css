@@ -795,6 +795,7 @@ main {
 .reviewCard { background: rgba(10,0,20,.92); border: 1px solid rgba(255,255,255,.1); border-radius: 16px; padding: 25px; }
 .reviewHead { display: flex; gap: 14px; align-items: center; }
 .reviewAvatar { display: grid; place-items: center; width: 44px; height: 44px; flex-shrink: 0; border-radius: 50%; background: #790089; font-weight: 600; }
+.reviewAvatar img { display: block; width: 100%; height: 100%; border-radius: inherit; object-fit: cover; }
 .reviewHead h3 { font-size: 17px; margin: 0 0 4px; overflow-wrap: anywhere; }
 .reviewHead time { font-size: 12px; color: #bbbbbb; }
 .reviewStars { color: #ffb5ff; letter-spacing: 3px; font-size: 22px; margin: 16px 0 12px; }
@@ -817,6 +818,7 @@ main {
 .ratingOption:focus-within { outline: 2px solid #ff75ff; outline-offset: 2px; border-radius: 6px; }
 .reviewRating .formNota { text-align: left; }
 .reviewFeedback { font-size: 14px; color: #e0d0e5; line-height: 1.6; margin: 16px 0 0; }
+.reviewAccountLimit { margin: 20px auto 0; max-width: 620px; color: #ffb5ff; font-size: 14px; line-height: 1.55; }
 .reviewPrivateLink { margin-top: 24px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,.15); }
 .reviewPrivateLink .heroBoton { font-size: 11px; }
 .resenasContenido .reviewDeletePanel { margin: 36px auto 0; text-align: center; }
