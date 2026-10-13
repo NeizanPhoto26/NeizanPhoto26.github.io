@@ -1160,15 +1160,15 @@ a:focus-visible, button:focus-visible, summary:focus-visible { outline: 2px soli
 .hero::before { background: linear-gradient(90deg, rgba(5,0,7,.82), rgba(5,0,7,.28) 62%, rgba(5,0,7,.12)), linear-gradient(0deg, rgba(5,0,7,.55), transparent 45%); }
 .heroContenido { width: 100%; max-width: 1050px; margin: 0 auto; }
 .heroEtiqueta { color: #e8d9eb; font-size: 11px; letter-spacing: .25em; margin: 0 0 26px; }
-.hero .heroLogo { display: block; width: 180px; max-width: 40vw; height: auto; margin: 0 auto 28px; }
-.hero .heroTitulo { font-size: clamp(24px, 3vw, 36px); white-space: nowrap; line-height: 1.4; font-weight: 400; letter-spacing: .01em; color: #ffffff; margin: 0 0 32px; }
+.hero .heroLogo { display: block; width: 220px; max-width: 48vw; height: auto; margin: 0 auto 32px; }
+.hero .heroTitulo { font-size: clamp(20px, 3.3vw, 40px); white-space: normal; line-height: 1.35; font-weight: 500; letter-spacing: .08em; text-transform: uppercase; color: #ffffff; margin: 0 0 18px; }
 .heroTitulo span { color: #ff8fff; }
 .hero .heroTexto { padding: 0; font-size: 18px; color: #e1d8e5; margin: 0 0 34px; }
 .hero .heroBoton { padding: 15px 30px; background: rgba(5,0,7,.2); }
 @media (max-width: 576px) {
     .hero { min-height: 85svh; padding: 135px 24px 72px; background-position: 58% center; }
     .heroEtiqueta { font-size: 9px; letter-spacing: .18em; }
-    .hero .heroTitulo { font-size: clamp(22px, 5.6vw, 28px); }
+    .hero .heroTitulo { font-size: clamp(18px, 4.3vw, 24px); letter-spacing: .05em; }
     .hero .heroTexto { font-size: 15px; }
 }
 .reservaPresentacion .whatsappBoton { margin-top: 20px; }
@@ -1178,7 +1178,7 @@ a:focus-visible, button:focus-visible, summary:focus-visible { outline: 2px soli
 .serviciosMotos { padding-bottom: 0; }
 .serviciosMotos + .reserva { padding-top: 42px; }
 @media (max-width: 576px) {
-    .hero .heroLogo { max-width: 140px; }
+    .hero .heroLogo { max-width: 48vw; }
     .whatsappBoton { max-width: 100%; padding: 13px 18px; font-size: 13px; }
     .serviciosMotos + .reserva { padding-top: 32px; }
     .videoEstreno { padding-bottom: 28px; }
