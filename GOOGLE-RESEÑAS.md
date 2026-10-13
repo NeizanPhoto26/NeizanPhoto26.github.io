@@ -46,4 +46,6 @@ Al iniciar sesión se intentan vincular las reseñas cuyos códigos privados con
 
 Vuelve a enviar directamente por POST a `https://formspree.io/f/xyzrnpar`, con la redirección de Formspree. El correo destinatario y la dirección de retorno se gestionan en el panel de Formspree. Si no llega el correo, revisa allí que el formulario siga activo, el destinatario esté confirmado y las notificaciones estén habilitadas. No se han enviado reservas de prueba automáticamente.
 
+En el formulario `xyzrnpar` de Formspree, abre **Settings → Redirect** y configura la URL de regreso como `https://neizanphoto26.github.io/?solicitud=enviada#reserva`. La web mostrará el popup animado al llegar a esa dirección y quitará el marcador para no repetirlo al recargar. La redirección personalizada depende del plan de Formspree. Si tu cuenta no ofrece ese campo, hay que adaptar el envío AJAX para mostrar una confirmación tras la respuesta real; el envío HTML estándar no puede controlar la página alojada en Formspree.
+
 Documentación oficial: https://supabase.com/docs/guides/auth/social-login/auth-google y https://supabase.com/docs/guides/auth/redirect-urls.

@@ -43,5 +43,14 @@
     window.showSuccessPopup = (heading, text) => showPopup(heading, text);
     window.showNoticePopup = (heading, text) => showPopup(heading, text, true);
 
+    // Formspree debe usar esta URL solo después de completar el envío:
+    // https://neizanphoto26.github.io/?solicitud=enviada#reserva
+    const returnUrl = new URL(window.location.href);
+    if (returnUrl.searchParams.get('solicitud') === 'enviada') {
+        returnUrl.searchParams.delete('solicitud');
+        window.history.replaceState(null, '', returnUrl.href);
+        window.showSuccessPopup('¡Solicitud enviada!', 'Gracias por contarme tu idea. Te contactaré por email para preparar tu sesión y confirmar la fecha.');
+    }
+
     // La reserva usa el envío HTML original a Formspree y su redirección.
 })();
