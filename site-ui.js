@@ -33,11 +33,15 @@
     document.body.append(popup);
     close.addEventListener('click', () => popup.close());
     popup.addEventListener('click', event => { if (event.target === popup) popup.close(); });
-    window.showSuccessPopup = (heading, text) => {
+    function showPopup(heading, text, notice = false) {
         title.textContent = heading; message.textContent = text;
+        icon.textContent = notice ? '!' : '✓';
+        close.textContent = notice ? 'Entendido' : '¡Perfecto!';
         if (!popup.open) popup.showModal();
         close.focus();
-    };
+    }
+    window.showSuccessPopup = (heading, text) => showPopup(heading, text);
+    window.showNoticePopup = (heading, text) => showPopup(heading, text, true);
 
     const booking = document.querySelector('form.reservaForm');
     if (!booking) return;

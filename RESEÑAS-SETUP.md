@@ -8,7 +8,7 @@ La portada muestra las **tres últimas reseñas**. `Resenas.html` muestra todas 
 
 ### Edición de reseñas
 
-Ejecuta `supabase/review-edit.sql` completo en SQL Editor después de la actualización de fotos. El botón «Editar mi reseña» aparece junto al de eliminación solo para el navegador que conserva el código privado. Permite cambiar nombre, valoración, comentario y fotos; las fotos existentes se conservan si no seleccionas nuevas y puedes quitarlas con «Quitar fotos». La función valida el código del autor en el servidor y mantiene el estado de visibilidad que haya establecido el administrador.
+Ejecuta `supabase/review-edit.sql` completo en SQL Editor después de la actualización de fotos. El botón «Editar mi reseña» aparece junto al de eliminación solo para el navegador que conserva el código privado. Permite cambiar nombre, valoración, comentario y fotos. Las fotos nuevas se añaden a las actuales y cada foto tiene su botón «Quitar foto». El máximo es tres fotos en total; superar el límite muestra un aviso y conserva las fotos existentes. La función valida el código del autor en el servidor y mantiene el estado de visibilidad que haya establecido el administrador.
 
 `site-ui.js` debe publicarse junto a los otros archivos: añade el menú compartido y los avisos de éxito. El aviso de reserva solo aparece cuando Formspree confirma el envío. No confirma una fecha reservada.
 

@@ -23,11 +23,25 @@
     let selectedOwner = null;
     let pendingSubmission = null;
     let editingOwner = null;
+    let selectedPhotos = [];
+    let processingPhotos = false;
     const editCancel = document.getElementById('reviewEditCancel');
     const clearPhotos = document.getElementById('reviewClearPhotos');
     function showPhotoPreview(images) {
+        selectedPhotos = [...images];
         photosPreview.replaceChildren();
-        images.forEach(src => { const image = document.createElement('img'); image.src = src; image.alt = 'Foto de tu reseña'; photosPreview.append(image); });
+        images.forEach((src, index) => {
+            const wrapper = document.createElement('div'); wrapper.className = 'reviewPreviewPhoto';
+            const image = document.createElement('img'); image.src = src; image.alt = `Foto ${index + 1} de tu reseña`;
+            const remove = document.createElement('button'); remove.type = 'button'; remove.className = 'reviewRemovePhoto';
+            remove.textContent = 'Quitar foto'; remove.setAttribute('aria-label', `Quitar foto ${index + 1}`);
+            remove.addEventListener('click', () => {
+                if (processingPhotos || submit.disabled) return;
+                const remaining = selectedPhotos.filter((_, photoIndex) => photoIndex !== index);
+                photosReady = Promise.resolve(remaining); photosInput.value = ''; showPhotoPreview(remaining);
+            });
+            wrapper.append(image, remove); photosPreview.append(wrapper);
+        });
         clearPhotos.hidden = images.length === 0;
     }
     function resetEditor() {
@@ -57,7 +71,7 @@
             photosReady = Promise.resolve(images); showPhotoPreview(images);
             form.querySelector('h3').textContent = 'Edita tu reseña';
             submit.textContent = 'Guardar cambios'; editCancel.hidden = false;
-            feedback.textContent = 'Puedes cambiar el texto, las estrellas o las fotos. Seleccionar fotos nuevas sustituye las anteriores.';
+            feedback.textContent = 'Puedes cambiar el texto, las estrellas y añadir fotos. Quita solo las que quieras reemplazar.';
             form.closest('details').open = true;
             form.scrollIntoView({ behavior: 'auto', block: 'start' });
             document.getElementById('reviewComment').focus({ preventScroll: true });
@@ -87,35 +101,78 @@
     }
     let photoSelection = 0;
     photosInput.addEventListener('change', () => {
-        const selection = ++photoSelection;
         const files = Array.from(photosInput.files || []);
-        photosPreview.replaceChildren();
+        if (!files.length) return;
+        if (selectedPhotos.length + files.length > 3) {
+            photosInput.value = '';
+            feedback.textContent = 'MÁXIMO 3 FOTOS. Quita alguna de las actuales para añadir otras.';
+            window.showNoticePopup?.('MÁXIMO 3 FOTOS', 'Puedes publicar hasta 3 fotos por reseña. Tus fotos actuales se conservan; quita alguna si quieres añadir otras.');
+            return;
+        }
+        const selection = ++photoSelection;
+        const previous = [...selectedPhotos];
+        processingPhotos = true; photosInput.disabled = true; clearPhotos.disabled = true;
         photosReady = (async () => {
             try {
-                if (files.length > 3) throw new Error('Puedes añadir hasta 3 fotos.');
-                const images = [];
+                const images = [...previous];
                 // Procesar una a una evita decodificar varias fotos grandes simultáneamente.
                 for (const file of files) images.push(await compressPhoto(file));
                 if (selection === photoSelection) {
                     showPhotoPreview(images);
                     feedback.textContent = '';
                 }
-                return images;
+                return selection === photoSelection ? images : selectedPhotos;
             } catch (error) {
                 if (selection === photoSelection) feedback.textContent = error.message;
-                return null;
+                // Un archivo inválido no borra las fotos válidas anteriores.
+                return previous;
+            } finally {
+                processingPhotos = false; photosInput.disabled = submit.disabled; clearPhotos.disabled = submit.disabled;
+                photosInput.value = '';
             }
         })();
     });
     const photoDialog = document.getElementById('reviewPhotoViewer');
     const photoFull = document.getElementById('reviewPhotoFull');
-    function openReviewPhoto(src, alt) {
-        photoFull.src = src; photoFull.alt = alt;
-        photoDialog.showModal();
+    const photoPrev = document.getElementById('reviewPhotoPrev');
+    const photoNext = document.getElementById('reviewPhotoNext');
+    let viewerPhotos = [];
+    let viewerIndex = 0;
+    let viewerName = '';
+    function renderReviewPhoto() {
+        photoFull.src = viewerPhotos[viewerIndex];
+        photoFull.alt = `Foto ${viewerIndex + 1} de ${viewerPhotos.length} de la reseña de ${viewerName}`;
+        photoPrev.hidden = photoNext.hidden = viewerPhotos.length < 2;
     }
+    function moveReviewPhoto(direction) {
+        if (!viewerPhotos.length) return;
+        viewerIndex = (viewerIndex + direction + viewerPhotos.length) % viewerPhotos.length;
+        renderReviewPhoto();
+    }
+    function openReviewPhoto(images, index, name) {
+        viewerPhotos = images; viewerIndex = index; viewerName = name;
+        renderReviewPhoto();
+        photoDialog.showModal();
+        document.body.classList.add('lightboxActive');
+    }
+    photoPrev.addEventListener('click', () => moveReviewPhoto(-1));
+    photoNext.addEventListener('click', () => moveReviewPhoto(1));
+    photoDialog.addEventListener('keydown', event => {
+        if (event.key === 'ArrowLeft') { event.preventDefault(); moveReviewPhoto(-1); }
+        if (event.key === 'ArrowRight') { event.preventDefault(); moveReviewPhoto(1); }
+    });
+    let touchStart = null;
+    photoFull.addEventListener('touchstart', event => { if (event.touches.length === 1) touchStart = event.touches[0].clientX; }, { passive: true });
+    photoFull.addEventListener('touchend', event => {
+        if (touchStart !== null && event.changedTouches.length === 1) {
+            const distance = event.changedTouches[0].clientX - touchStart;
+            if (Math.abs(distance) > 50) moveReviewPhoto(distance < 0 ? 1 : -1);
+        }
+        touchStart = null;
+    }, { passive: true });
     document.getElementById('reviewPhotoClose').addEventListener('click', () => photoDialog.close());
     photoDialog.addEventListener('click', event => { if (event.target === photoDialog) photoDialog.close(); });
-    photoDialog.addEventListener('close', () => { photoFull.src = ''; });
+    photoDialog.addEventListener('close', () => { photoFull.src = ''; viewerPhotos = []; document.body.classList.remove('lightboxActive'); });
     const validOwner = owner => owner && /^[0-9a-f-]{36}$/.test(owner.id) && /^[a-f0-9]{64}$/.test(owner.token);
     function remember(owner) {
         owned[owner.id] = owner;
@@ -229,12 +286,12 @@
                 viewPhotos.disabled = true;
                 try {
                     const [row] = await request(`reviews?select=photos&id=eq.${review.id}&approved=eq.true`);
-                    (row?.photos || []).forEach((src, index) => {
-                        if (!/^data:image\/jpeg;base64,[A-Za-z0-9+/]+={0,2}$/.test(src)) return;
+                    const images = (row?.photos || []).filter(src => /^data:image\/jpeg;base64,[A-Za-z0-9+/]+={0,2}$/.test(src));
+                    images.forEach((src, index) => {
                         const image = document.createElement('img');
                         image.src = src; image.alt = `Foto ${index + 1} de la reseña de ${review.name}`;
                         image.decoding = 'async';
-                        image.addEventListener('click', () => openReviewPhoto(src, image.alt));
+                        image.addEventListener('click', () => openReviewPhoto(images, index, review.name));
                         photos.append(image);
                     });
                     viewPhotos.hidden = true;
