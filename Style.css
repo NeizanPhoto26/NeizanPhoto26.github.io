@@ -832,7 +832,7 @@ main {
 .reviewPhotos img { display: block; width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: 8px; cursor: zoom-in; }
 .reviewPhotosButton { display: block; width: fit-content; margin: 18px auto 0; color: #ffb5ff; background: transparent; border: 1px solid #790089; padding: 10px 18px; border-radius: 20px; font-size: 13px; }
 #reviewPhotosHint { text-align: left; line-height: 1.6; }
-.reviewPhotoDialog { border: 0; background: #08000d; color: white; padding: 56px 20px 20px; max-width: 94vw; max-height: 94vh; border-radius: 12px; }
+.reviewPhotoDialog { position: fixed; inset: 0; margin: auto; width: fit-content; height: fit-content; border: 0; background: #08000d; color: white; padding: 56px 20px 20px; max-width: 94vw; max-height: 94vh; border-radius: 12px; }
 .reviewPhotoDialog::backdrop { background: rgba(3,0,6,.94); }
 .reviewPhotoDialog > img { display: block; max-width: 85vw; max-height: 76vh; object-fit: contain; }
 .reviewPhotoDialog .lightboxClose { background: #790089; color: #ffffff; }
