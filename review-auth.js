@@ -49,8 +49,9 @@
         writer.hidden = !session;
         if (session) {
             const metadata = session.user.user_metadata || {};
-            const name = metadata.full_name || metadata.name || session.user.email || 'Cliente';
-            const imageUrl = metadata.avatar_url || metadata.picture || '';
+            const googleIdentity = session.user.identities?.find(identity => identity.provider === 'google')?.identity_data || {};
+            const name = metadata.full_name || metadata.name || googleIdentity.full_name || googleIdentity.name || session.user.email || 'Cliente';
+            const imageUrl = metadata.avatar_url || metadata.picture || googleIdentity.avatar_url || googleIdentity.picture || '';
             accountLabel.textContent = 'Cuenta de Google conectada';
             status.textContent = name;
             accountEmail.textContent = session.user.email || '';
