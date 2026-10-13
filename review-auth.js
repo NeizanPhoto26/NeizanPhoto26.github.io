@@ -24,14 +24,31 @@
         document.head.append(script);
     }).then(async () => {
         auth.client = window.supabase.createClient(config.supabaseUrl, config.publishableKey, {
-            auth: { flowType: 'pkce', persistSession: true, autoRefreshToken: true, detectSessionInUrl: true }
+            auth: { flowType: 'pkce', persistSession: true, autoRefreshToken: true, detectSessionInUrl: false }
         });
         auth.client.auth.onAuthStateChange((_event, session) => showSession(session));
-        const { data, error } = await auth.client.auth.getSession();
-        if (error) throw error;
-        showSession(data.session); login.disabled = false;
+        const callbackUrl = new URL(window.location.href);
+        const code = callbackUrl.searchParams.get('code');
+        const callbackError = callbackUrl.searchParams.get('error');
+        if (callbackError) throw new Error('OAuth callback rejected');
+        let session;
+        if (code) {
+            status.textContent = 'Completando el inicio de sesión…';
+            const { data, error } = await auth.client.auth.exchangeCodeForSession(code);
+            if (error || !data.session) throw new Error('OAuth exchange failed');
+            session = data.session;
+        } else {
+            const { data, error } = await auth.client.auth.getSession();
+            if (error) throw error;
+            session = data.session;
+        }
+        // Quitar el código de un solo uso evita reutilizarlo al recargar.
+        for (const parameter of ['code', 'sb_flow_id', 'error', 'error_code', 'error_description']) callbackUrl.searchParams.delete(parameter);
+        window.history.replaceState(null, '', callbackUrl.href);
+        showSession(session); login.disabled = false;
     }).catch(() => {
-        status.textContent = 'No se pudo iniciar la conexión con Google. Recarga la página para volver a intentarlo.';
+        login.disabled = false;
+        status.textContent = 'No se pudo completar el acceso. Pulsa Continuar con Google para volver a intentarlo desde esta página.';
     });
     login.addEventListener('click', async () => {
         if (window.location.protocol === 'file:') {
