@@ -30,6 +30,22 @@
     let processingPhotos = false;
     const editCancel = document.getElementById('reviewEditCancel');
     const clearPhotos = document.getElementById('reviewClearPhotos');
+    const writer = form.closest('.reviewWrite');
+    const accountLimit = document.createElement('p');
+    accountLimit.id = 'reviewAccountLimit';
+    accountLimit.className = 'reviewAccountLimit';
+    accountLimit.hidden = true;
+    accountLimit.setAttribute('role', 'status');
+    accountLimit.textContent = 'Ya has publicado una reseña con esta cuenta. Puedes editarla o eliminarla desde tu tarjeta.';
+    writer.after(accountLimit);
+    let accountReviewResolved = false;
+    function updateReviewAccess() {
+        if (!config.googleEnabled) return;
+        const signedIn = !!window.reviewAuth?.session;
+        const hasReview = signedIn && accountReviewResolved && accountOwned.size > 0;
+        writer.hidden = !signedIn || !accountReviewResolved || (hasReview && !editingOwner);
+        accountLimit.hidden = !hasReview || !!editingOwner;
+    }
     function showPhotoPreview(images) {
         selectedPhotos = [...images];
         photosPreview.replaceChildren();
@@ -54,6 +70,7 @@
         editCancel.hidden = true; submit.textContent = 'Enviar mi reseña';
         document.querySelectorAll('.ratingSelected').forEach(label => label.classList.remove('ratingSelected'));
         document.getElementById('ratingHint').textContent = 'Elige de 1 a 5 estrellas';
+        updateReviewAccess();
     }
     editCancel.addEventListener('click', () => { if (!submit.disabled) { resetEditor(); feedback.textContent = ''; } });
     clearPhotos.addEventListener('click', () => {
@@ -65,7 +82,7 @@
         try {
             const [current] = await request(`reviews?select=photos&id=eq.${review.id}&approved=eq.true`);
             if (!current) throw new Error('Missing review');
-            resetEditor(); editingOwner = owner;
+            resetEditor(); editingOwner = owner; updateReviewAccess();
             document.getElementById('reviewName').value = review.name;
             document.getElementById('reviewComment').value = review.comment;
             const selected = form.querySelector(`input[name="reviewRating"][value="${review.rating}"]`);
@@ -180,7 +197,14 @@
     async function syncAccount() {
         const generation = ++authGeneration;
         accountOwned = new Set();
-        if (!window.reviewAuth?.session) { if (config.googleEnabled) loadReviews(true); return; }
+        accountReviewResolved = false;
+        updateReviewAccess();
+        if (!window.reviewAuth?.session) {
+            accountReviewResolved = true;
+            updateReviewAccess();
+            if (config.googleEnabled) loadReviews(true);
+            return;
+        }
         try {
             // Solo vincular las reseñas que este navegador puede demostrar que publicó.
             for (const owner of Object.values(owned).slice(0, 50)) {
@@ -191,8 +215,14 @@
             const ids = await request('rpc/my_review_ids', { method: 'POST', body: '{}' });
             if (generation !== authGeneration) return;
             accountOwned = new Set(ids.map(row => row.id));
+            accountReviewResolved = true;
+            updateReviewAccess();
             loadReviews(true);
-        } catch { document.getElementById('reviewAccountStatus').textContent = 'La sesión está iniciada, pero no se pudieron recuperar tus reseñas. Recarga para volver a intentarlo.'; }
+        } catch {
+            accountReviewResolved = true;
+            updateReviewAccess();
+            document.getElementById('reviewAccountStatus').textContent = 'La sesión está iniciada, pero no se pudieron recuperar tus reseñas. Recarga para volver a intentarlo.';
+        }
     }
     document.addEventListener('review-auth-changed', () => {
         const accountId = window.reviewAuth?.session?.user?.id || null;
@@ -232,8 +262,14 @@
             deleteFeedback.textContent = deleted ? 'Tu reseña y sus fotos se han eliminado.' : 'Esta reseña ya no existe o este navegador no tiene autorización para eliminarla.';
             if (deleted) {
                 delete owned[owner.id];
+                accountOwned.delete(owner.id);
+                accountReviewResolved = true;
+                selectedOwner = null;
+                deletePanel.hidden = true;
                 try { localStorage.setItem(storageKey, JSON.stringify(owned)); } catch { /* Opcional. */ }
                 if (window.location.hash.startsWith('#eliminar-resena=')) window.location.hash = 'resenas';
+                updateReviewAccess();
+                window.showSuccessPopup?.('Reseña eliminada', 'Tu reseña y sus fotos se han eliminado correctamente.');
                 loadReviews(true); loadSummary();
             }
         } catch (error) {
@@ -278,7 +314,16 @@
         const avatar = document.createElement('span');
         avatar.className = 'reviewAvatar';
         avatar.setAttribute('aria-hidden', 'true');
-        avatar.textContent = Array.from(review.name.trim())[0].toLocaleUpperCase('es');
+        const initial = Array.from(review.name.trim())[0].toLocaleUpperCase('es');
+        const avatarUrl = typeof review.avatar_url === 'string' && /^https:\/\//i.test(review.avatar_url) ? review.avatar_url : '';
+        if (avatarUrl) {
+            const image = document.createElement('img');
+            image.src = avatarUrl;
+            image.alt = '';
+            image.referrerPolicy = 'no-referrer';
+            image.addEventListener('error', () => { image.remove(); avatar.textContent = initial; });
+            avatar.append(image);
+        } else avatar.textContent = initial;
         const identity = document.createElement('div');
         const name = document.createElement('h3');
         name.textContent = review.name;
@@ -360,7 +405,7 @@
         try {
             let rows;
             try {
-                rows = await request(`reviews?select=id,name,rating,comment,created_at,photo_count&approved=eq.true&order=created_at.desc,id.desc&limit=${pageSize + 1}&offset=${offset}`);
+                rows = await request(`reviews?select=id,name,rating,comment,created_at,photo_count,avatar_url&approved=eq.true&order=created_at.desc,id.desc&limit=${pageSize + 1}&offset=${offset}`);
             } catch (error) {
                 // Seguir mostrando el texto mientras el propietario aplica la migración.
                 if (error.code !== '42703' && error.code !== 'PGRST204') throw error;
@@ -413,6 +458,11 @@
         event.preventDefault();
         if (!configured || submit.disabled) return;
         if (config.googleEnabled && !window.reviewAuth?.session) { window.showNoticePopup?.('Inicia sesión con Google', 'Usa tu cuenta para publicar y gestionar tu reseña cuando quieras.'); return; }
+        if (config.googleEnabled && !editingOwner && accountOwned.size > 0) {
+            updateReviewAccess();
+            window.showNoticePopup?.('Ya tienes una reseña', 'Solo se permite una reseña por cuenta. Puedes editarla o eliminarla desde tu tarjeta.');
+            return;
+        }
         const data = new FormData(form);
         if (data.get('website')) return; // Campo señuelo para bots básicos.
         const name = String(data.get('reviewName') || '').trim();
@@ -453,6 +503,10 @@
                 method: 'POST',
                 body: JSON.stringify({ p_id: owner.id, p_name: name, p_rating: rating, p_comment: comment, p_consent: true, p_token: owner.token, p_photos: photos })
             });
+            if (config.googleEnabled) {
+                accountOwned.add(owner.id);
+                accountReviewResolved = true;
+            }
             }
             resetEditor();
             feedback.textContent = isEditing ? 'Tu reseña se ha actualizado.' : '¡Gracias! Tu reseña se ha publicado.';
@@ -461,7 +515,11 @@
             loadSummary();
             if (config.googleEnabled) syncAccount();
         } catch (error) {
-            feedback.textContent = error.code === 'PGRST202'
+            if (error.code === '23505' && !editingOwner) {
+                feedback.textContent = 'Esta cuenta ya tiene una reseña. Puedes editarla o eliminarla desde su tarjeta.';
+                window.showNoticePopup?.('Ya tienes una reseña', 'Solo se permite una reseña por cuenta.');
+                syncAccount();
+            } else feedback.textContent = error.code === 'PGRST202'
                 ? (editingOwner ? 'La edición todavía no está activada. Contacta con Neizan o inténtalo más tarde.' : 'El envío todavía no está actualizado. Contacta con Neizan o inténtalo más tarde.')
                 : 'No se ha podido confirmar el envío. Tu texto sigue aquí; vuelve a intentarlo en unos momentos.';
         } finally {
