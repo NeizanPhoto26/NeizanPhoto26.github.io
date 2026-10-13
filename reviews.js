@@ -22,6 +22,48 @@
     try { owned = JSON.parse(localStorage.getItem(storageKey) || '{}') || {}; } catch { /* El enlace también se puede copiar. */ }
     let selectedOwner = null;
     let pendingSubmission = null;
+    let editingOwner = null;
+    const editCancel = document.getElementById('reviewEditCancel');
+    const clearPhotos = document.getElementById('reviewClearPhotos');
+    function showPhotoPreview(images) {
+        photosPreview.replaceChildren();
+        images.forEach(src => { const image = document.createElement('img'); image.src = src; image.alt = 'Foto de tu reseña'; photosPreview.append(image); });
+        clearPhotos.hidden = images.length === 0;
+    }
+    function resetEditor() {
+        editingOwner = null; pendingSubmission = null; form.reset();
+        photoSelection++; photosReady = Promise.resolve([]); showPhotoPreview([]);
+        form.querySelector('h3').textContent = '¿Qué tal tu sesión?';
+        editCancel.hidden = true; submit.textContent = 'Enviar mi reseña';
+        document.querySelectorAll('.ratingSelected').forEach(label => label.classList.remove('ratingSelected'));
+        document.getElementById('ratingHint').textContent = 'Elige de 1 a 5 estrellas';
+    }
+    editCancel.addEventListener('click', () => { if (!submit.disabled) { resetEditor(); feedback.textContent = ''; } });
+    clearPhotos.addEventListener('click', () => {
+        photoSelection++; photosInput.value = ''; photosReady = Promise.resolve([]); showPhotoPreview([]);
+    });
+    async function openEditor(review, owner, button) {
+        if (submit.disabled) return;
+        button.disabled = true;
+        try {
+            const [current] = await request(`reviews?select=photos&id=eq.${review.id}&approved=eq.true`);
+            if (!current) throw new Error('Missing review');
+            resetEditor(); editingOwner = owner;
+            document.getElementById('reviewName').value = review.name;
+            document.getElementById('reviewComment').value = review.comment;
+            const selected = form.querySelector(`input[name="reviewRating"][value="${review.rating}"]`);
+            selected.checked = true; selected.dispatchEvent(new Event('change'));
+            const images = current.photos || [];
+            photosReady = Promise.resolve(images); showPhotoPreview(images);
+            form.querySelector('h3').textContent = 'Edita tu reseña';
+            submit.textContent = 'Guardar cambios'; editCancel.hidden = false;
+            feedback.textContent = 'Puedes cambiar el texto, las estrellas o las fotos. Seleccionar fotos nuevas sustituye las anteriores.';
+            form.closest('details').open = true;
+            form.scrollIntoView({ behavior: 'auto', block: 'start' });
+            document.getElementById('reviewComment').focus({ preventScroll: true });
+        } catch { status.textContent = 'No se pudo abrir la edición. Vuelve a intentarlo.'; }
+        finally { button.disabled = false; }
+    }
     let photosReady = Promise.resolve([]);
     async function compressPhoto(file) {
         if (!['image/jpeg', 'image/png', 'image/webp'].includes(file.type) || file.size > 15 * 1024 * 1024) {
@@ -55,11 +97,7 @@
                 // Procesar una a una evita decodificar varias fotos grandes simultáneamente.
                 for (const file of files) images.push(await compressPhoto(file));
                 if (selection === photoSelection) {
-                    images.forEach(src => {
-                        const image = document.createElement('img');
-                        image.src = src; image.alt = 'Vista previa de tu foto';
-                        photosPreview.append(image);
-                    });
+                    showPhotoPreview(images);
                     feedback.textContent = '';
                 }
                 return images;
@@ -212,10 +250,13 @@
             const actions = document.createElement('div');
             actions.className = 'reviewOwnerActions';
             const remove = document.createElement('button');
+            const edit = document.createElement('button');
+            edit.type = 'button'; edit.textContent = 'Editar mi reseña';
+            edit.addEventListener('click', () => openEditor(review, owner, edit));
             remove.type = 'button';
             remove.textContent = 'Eliminar mi reseña';
             remove.addEventListener('click', () => openDeletion(owner));
-            actions.append(remove);
+            actions.append(edit, remove);
             card.append(actions);
         }
         list.append(card);
@@ -298,10 +339,18 @@
         submit.disabled = true;
         photosInput.disabled = true;
         submit.textContent = 'Enviando…';
+        editCancel.disabled = true; clearPhotos.disabled = true;
         feedback.textContent = '';
         try {
             const photos = await photosReady;
             if (!photos) { feedback.textContent = 'Revisa las fotos: hasta 3 archivos JPG, PNG o WebP de 15 MB cada uno.'; return; }
+            const isEditing = !!editingOwner;
+            if (isEditing) {
+                const saved = await request('rpc/update_own_review', {
+                    method: 'POST', body: JSON.stringify({ p_id: editingOwner.id, p_token: editingOwner.token, p_name: name, p_rating: rating, p_comment: comment, p_consent: true, p_photos: photos })
+                });
+                if (!saved) throw new Error('Not authorized');
+            } else {
             const signature = JSON.stringify({ name, rating, comment, photos });
             if (!pendingSubmission || pendingSubmission.signature !== signature) {
                 const bytes = crypto.getRandomValues(new Uint8Array(32));
@@ -318,24 +367,21 @@
                 method: 'POST',
                 body: JSON.stringify({ p_id: owner.id, p_name: name, p_rating: rating, p_comment: comment, p_consent: true, p_token: owner.token, p_photos: photos })
             });
-            pendingSubmission = null;
-            form.reset();
-            photoSelection++;
-            photosReady = Promise.resolve([]);
-            photosPreview.replaceChildren();
-            document.querySelectorAll('.ratingSelected').forEach(label => label.classList.remove('ratingSelected'));
-            document.getElementById('ratingHint').textContent = 'Elige de 1 a 5 estrellas';
-            feedback.textContent = '¡Gracias! Tu reseña se ha publicado.';
+            }
+            resetEditor();
+            feedback.textContent = isEditing ? 'Tu reseña se ha actualizado.' : '¡Gracias! Tu reseña se ha publicado.';
+            window.showSuccessPopup?.(isEditing ? '¡Cambios guardados!' : '¡Gracias por tu reseña!', isEditing ? 'Tu reseña ya muestra los cambios que has hecho.' : 'Tu reseña se ha publicado. Gracias por compartir tu experiencia con Neizan Photo 26.');
             loadReviews(true);
             loadSummary();
         } catch (error) {
             feedback.textContent = error.code === 'PGRST202'
-                ? 'El envío todavía no está actualizado. Contacta con Neizan o inténtalo más tarde.'
+                ? (editingOwner ? 'La edición todavía no está activada. Contacta con Neizan o inténtalo más tarde.' : 'El envío todavía no está actualizado. Contacta con Neizan o inténtalo más tarde.')
                 : 'No se ha podido confirmar el envío. Tu texto sigue aquí; vuelve a intentarlo en unos momentos.';
         } finally {
             submit.disabled = false;
             photosInput.disabled = false;
-            submit.textContent = 'Enviar mi reseña';
+            editCancel.disabled = false; clearPhotos.disabled = false;
+            submit.textContent = editingOwner ? 'Guardar cambios' : 'Enviar mi reseña';
         }
     });
     more.addEventListener('click', () => { more.textContent = 'Ver más reseñas'; loadReviews(); });

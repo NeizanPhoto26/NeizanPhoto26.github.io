@@ -74,7 +74,7 @@
             </a>
 
             <a href="#reserva" class="heroBoton cabeceraReserva">Reserva tu sesión</a>
-            <button class="botonmenu" id="botonMenu" aria-label="Abrir menú de navegación">
+            <button class="botonmenu" id="botonMenu" aria-controls="panelMenu" aria-expanded="false" aria-label="Abrir menú de navegación">
                 <span class="iconomenu"></span>
             </button>
         </nav>
@@ -257,9 +257,10 @@
                             <label class="ratingOption"><input type="radio" name="reviewRating" value="5"><span aria-hidden="true">★</span><span class="visually-hidden">5 estrellas</span></label>
                         </div><p id="ratingHint" class="formNota">Elige de 1 a 5 estrellas</p></fieldset>
                         <div class="campoGrupo"><label for="reviewComment" class="campoLabel">Tu experiencia</label><textarea id="reviewComment" name="reviewComment" class="campoInput campoTextarea" minlength="10" maxlength="1000" rows="4" placeholder="¿Qué te ha gustado de la sesión o de tus fotos?" required></textarea></div>
-                        <div class="campoGrupo"><label for="reviewPhotos" class="campoLabel">Fotos de tu sesión <span>(opcional)</span></label><input id="reviewPhotos" class="campoInput" type="file" accept="image/jpeg,image/png,image/webp" multiple aria-describedby="reviewPhotosHint"><p id="reviewPhotosHint" class="formNota">Hasta 3 fotos JPG, PNG o WebP. Las comprimimos antes de enviarlas.</p><div id="reviewPhotoPreview" class="reviewPhotos"></div></div>
+                        <div class="campoGrupo"><label for="reviewPhotos" class="campoLabel">Fotos de tu sesión <span>(opcional)</span></label><input id="reviewPhotos" class="campoInput" type="file" accept="image/jpeg,image/png,image/webp" multiple aria-describedby="reviewPhotosHint"><p id="reviewPhotosHint" class="formNota">Hasta 3 fotos JPG, PNG o WebP. Las comprimimos antes de enviarlas.</p><div id="reviewPhotoPreview" class="reviewPhotos"></div><button id="reviewClearPhotos" type="button" class="reviewClearPhotos" hidden>Quitar fotos</button></div>
                         <div class="reviewTrap" aria-hidden="true"><label for="reviewWebsite">Web</label><input id="reviewWebsite" name="website" type="text" tabindex="-1" autocomplete="off"></div>
                         <label class="privacidadConsentimiento"><input type="checkbox" name="reviewConsent" required><span>Acepto publicar mi nombre, valoración, comentario y las fotos que adjunte. Tengo permiso para compartirlas y acepto la <a href="Privacidad.html#privacidad-resenas">política de privacidad</a>.</span></label>
+                        <button id="reviewEditCancel" type="button" class="reviewEditCancel" hidden>Cancelar edición</button>
                         <button id="reviewSubmit" type="submit" class="reservaBoton" disabled>Enviar mi reseña</button>
                         <p class="formNota">Tu reseña se publica al enviarla. Podemos retirar spam o contenido ajeno a una sesión.</p>
                         <p id="reviewFeedback" class="reviewFeedback" role="status" aria-live="polite"></p>
@@ -359,31 +360,6 @@
     </div>
 
 
-    <!-- Script abrir/cerrar menú -->
-    <script>
-        const botonMenu   = document.getElementById('botonMenu');
-        const botonCerrar = document.getElementById('botonCerrar');
-        const panelMenu   = document.getElementById('panelMenu');
-
-        botonMenu.addEventListener('click', () => {
-            panelMenu.classList.add('panelabierto');
-            panelMenu.setAttribute('aria-hidden', 'false');
-        });
-
-        botonCerrar.addEventListener('click', () => {
-            panelMenu.classList.remove('panelabierto');
-            panelMenu.setAttribute('aria-hidden', 'true');
-        });
-
-        // Cerrar el menú cuando se hace clic en un enlace
-        document.querySelectorAll('.enlacemenu').forEach(enlace => {
-            enlace.addEventListener('click', () => {
-                panelMenu.classList.remove('panelabierto');
-                panelMenu.setAttribute('aria-hidden', 'true');
-            });
-        });
-    </script>
-
     <!-- Script cookies -->
     <script>
         const banner = document.getElementById('cookie-banner');
@@ -466,6 +442,7 @@
         <button id="reviewPhotoClose" class="lightboxClose" type="button" aria-label="Cerrar foto"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
         <img id="reviewPhotoFull" alt="" decoding="async">
     </dialog>
+    <script src="site-ui.js" defer></script>
     <script src="reviews-config.js" defer></script>
     <script src="reviews.js" defer></script>
 </body>
