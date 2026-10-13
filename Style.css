@@ -819,7 +819,7 @@ main {
 .reviewFeedback { font-size: 14px; color: #e0d0e5; line-height: 1.6; margin: 16px 0 0; }
 .reviewPrivateLink { margin-top: 24px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,.15); }
 .reviewPrivateLink .heroBoton { font-size: 11px; }
-.reviewDeletePanel { margin-top: 30px; text-align: center; }
+.resenasContenido .reviewDeletePanel { margin: 36px auto 0; text-align: center; }
 .reviewDeletePanel p { color: #d0d0d0; line-height: 1.7; }
 .reviewDeletePanel .heroBoton { margin: 10px 6px; }
 .reviewDeletePanel button.heroBoton { background: transparent; color: #ffffff; border: 1px solid #ffffff; }
