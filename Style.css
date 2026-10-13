@@ -1136,3 +1136,26 @@ a:focus-visible, button:focus-visible, summary:focus-visible { outline: 2px soli
 /* Presentación y textos de sesiones */
 .fotosTituloDestacadas { color: #ff8fff; }
 .serviciosIntro { max-width: 720px; margin: -16px auto 32px; text-align: center; color: #d0d0d0; line-height: 1.7; padding: 0 16px; }
+
+/* Portada sencilla y contacto visible */
+.hero .heroLogo { max-width: 160px; margin-bottom: 24px; }
+.hero .heroTitulo { font-size: clamp(30px, 4.5vw, 54px); line-height: 1.15; letter-spacing: -.02em; text-transform: none; margin-bottom: 20px; }
+.hero .heroTexto { padding: 0 16px; line-height: 1.6; }
+.ctaVisual { border: 0; }
+.whatsappBoton { display: inline-flex; align-items: center; justify-content: center; gap: 10px; padding: 14px 24px; border: 1px solid #4ddd94; border-radius: 999px; background: #163d2c; color: #effff6; font-size: 14px; font-weight: 600; line-height: 1.4; text-decoration: none; box-shadow: 0 5px 20px rgba(37,211,102,.12); transition: background .2s ease, transform .2s ease, box-shadow .2s ease; }
+.whatsappBoton:hover { background: #20543b; color: #fff; transform: translateY(-2px); box-shadow: 0 8px 24px rgba(37,211,102,.22); text-decoration: none; }
+.whatsappBoton span { font-size: 20px; }
+.ctaContenido .whatsappBoton { margin-top: 18px; }
+.reservaPresentacion .whatsappBoton { margin-top: 20px; }
+.videoEstreno { padding-bottom: 36px; }
+.videoEstreno .trailerAdelanto { color: #ffb5ff; font-size: 20px; line-height: 1.5; margin: 0 0 24px; }
+.trailerContenido { margin: 0 auto; }
+.serviciosMotos { padding-bottom: 0; }
+.serviciosMotos + .reserva { padding-top: 42px; }
+@media (max-width: 576px) {
+    .hero .heroLogo { max-width: 140px; }
+    .whatsappBoton { max-width: 100%; padding: 13px 18px; font-size: 13px; }
+    .serviciosMotos + .reserva { padding-top: 32px; }
+    .videoEstreno { padding-bottom: 28px; }
+    .videoEstreno .trailerAdelanto { font-size: 17px; }
+}
