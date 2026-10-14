@@ -1137,6 +1137,39 @@ a:focus-visible, button:focus-visible, summary:focus-visible { outline: 2px soli
 .fotosTituloDestacadas { color: #ff8fff; }
 .serviciosIntro { max-width: 720px; margin: -16px auto 32px; text-align: center; color: #d0d0d0; line-height: 1.7; padding: 0 16px; }
 
+/* Reseñas: fotos visibles y tarjetas con jerarquía clara */
+.reviewsList { gap: 24px; align-items: start; }
+.reviewCard, .reviewsPage .reviewCard { display: flex; flex-direction: column; padding: 26px; border-radius: 16px; border: 1px solid #37323b; background: #19161d; box-shadow: 0 4px 16px rgba(0,0,0,.12); }
+.reviewHead { gap: 14px; }
+.reviewAvatar { width: 42px; height: 42px; background: #694477; color: #ffffff; font-size: 17px; font-weight: 500; box-shadow: none; }
+.reviewHead h3, .reviewsPage .reviewHead h3 { font-size: 15px; font-weight: 600; letter-spacing: 0; color: #f2edf4; }
+.reviewHead time { color: #aca6b1; font-size: 12px; }
+.reviewStars { margin: 20px 0 10px; font-size: 18px; letter-spacing: 2px; line-height: 1.25; color: #fbbc04; }
+.reviewComment, .reviewsPage .reviewComment { font-size: 15px; line-height: 1.65; color: #e0dce4; }
+.reviewCard .reviewExpandLink { order: 2; margin: 18px 0 0; padding: 7px 0; text-align: left; align-self: flex-start; font-size: 13px; font-weight: 500; color: #d7a9e3; text-decoration: none; }
+.reviewCard .reviewExpandLink:hover { color: #f1d4fa; text-decoration: underline; text-underline-offset: 4px; }
+.reviewCard .reviewOwnerActions { order: 3; display: flex; flex-wrap: wrap; justify-content: flex-start; gap: 12px; margin-top: 22px; padding-top: 18px; border-top: 1px solid rgba(255,255,255,.08); }
+.reviewCardPhotos, .reviewsPage .reviewCardPhotos { width: 100%; max-width: none; display: grid; gap: 6px; margin: 18px 0 0; }
+.reviewCardPhotos[data-count="1"] { grid-template-columns: minmax(0, 1fr); max-width: 360px; align-self: center; }
+.reviewCardPhotos[data-count="2"] { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.reviewCardPhotos[data-count="3"] { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.reviewCardPhotos:empty { display: none; }
+.reviewPhotoThumb { display: block; width: 100%; min-width: 0; padding: 0; border: 0; border-radius: 8px; overflow: hidden; background: #100b15; cursor: zoom-in; }
+.reviewCardPhotos .reviewPhotoThumb img { width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: 0; transition: transform .25s ease; }
+.reviewCardPhotos[data-count="1"] .reviewPhotoThumb img { aspect-ratio: 4 / 3; }
+.reviewCard .reviewOwnerActions button { border: 0; border-radius: 6px; background: transparent; color: #c2b8c9; padding: 8px 10px; font-size: 12px; transition: background .2s ease, color .2s ease; }
+.reviewCard .reviewOwnerActions button:hover { background: #302735; color: #ffffff; }
+.reviewsSummary { color: #ffb5ff; font-weight: 500; font-size: 26px; }
+.reviewPhotoThumb:hover img { transform: scale(1.035); }
+.reviewPhotoThumb:focus-visible { outline: 2px solid #ff8fff; outline-offset: 4px; }
+.reviewPhotosStatus { grid-column: 1 / -1; color: #b5a6bc; font-size: 13px; text-align: center; padding: 26px 12px; margin: 0; }
+.reviewPhotosButton[hidden] { display: none; }
+@media (max-width: 576px) {
+    .reviewCard, .reviewsPage .reviewCard { padding: 22px; border-radius: 14px; }
+    .reviewCardPhotos { gap: 7px; }
+    .reviewPhotoThumb { border-radius: 10px; }
+}
+
 /* Portada sencilla y contacto visible */
 .hero .heroLogo { max-width: 160px; margin-bottom: 24px; }
 .hero .heroTitulo { font-size: clamp(30px, 4.5vw, 54px); line-height: 1.15; letter-spacing: -.02em; text-transform: none; margin-bottom: 20px; }
@@ -1187,4 +1220,48 @@ a:focus-visible, button:focus-visible, summary:focus-visible { outline: 2px soli
     .serviciosMotos + .reserva { padding-top: 32px; }
     .videoEstreno { padding-bottom: 28px; }
     .videoEstreno .trailerAdelanto { font-size: 17px; }
+}
+
+/* Composición de la referencia con la identidad de Neizan Photo 26 */
+.resenasContenido .reviewsList, .reviewsPage .reviewsList { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); align-items: start; gap: 20px; }
+.reviewsPage .resenasContenido { max-width: 1100px; }
+.reviewCard, .reviewsPage .reviewCard { padding: 0; overflow: hidden; border-radius: 18px; border: 1px solid rgba(255,143,255,.18); background: linear-gradient(150deg, #1c0928, #100619); box-shadow: 0 8px 24px rgba(0,0,0,.2); }
+.reviewCard .reviewHead { padding: 22px 20px 0; gap: 12px; }
+.reviewAvatar { width: 40px; height: 40px; background: #790089; color: #fff; }
+.reviewHead h3, .reviewsPage .reviewHead h3 { font-size: 14px; line-height: 1.35; font-weight: 600; color: #ffffff; margin-bottom: 4px; }
+.reviewHead time { font-size: 11px; color: #b4a4bd; }
+.reviewCard .reviewStars { margin: 14px 20px 8px; font-size: 21px; color: #ff8fff; letter-spacing: 2px; }
+.reviewCard .reviewComment, .reviewsPage .reviewComment { margin: 0 20px 22px; color: #eee3f3; font-size: 14px; line-height: 1.65; }
+body:not(.reviewsPage) .reviewComment { -webkit-line-clamp: 5; }
+.reviewCard .reviewCardPhotos, .reviewsPage .reviewCardPhotos { width: 100%; max-width: none; margin: 0; gap: 3px; align-self: stretch; }
+.reviewCardPhotos .reviewPhotoThumb { border-radius: 0; }
+.reviewCardPhotos .reviewPhotoThumb img { aspect-ratio: 1; border-radius: 0; }
+.reviewCardPhotos[data-count="1"] { grid-template-columns: 1fr; }
+.reviewCardPhotos[data-count="1"] .reviewPhotoThumb { width: 100%; margin: 0 auto; }
+.reviewCardPhotos[data-count="1"] .reviewPhotoThumb img { aspect-ratio: 16 / 10; }
+.reviewCard .reviewExpandLink { align-self: stretch; margin: 0; padding: 14px 20px; font-size: 12px; color: #ffb5ff; border-top: 1px solid rgba(255,143,255,.08); }
+.reviewCard .reviewOwnerActions { gap: 6px; margin: 0; padding: 10px 12px; border-top: 1px solid rgba(255,143,255,.1); }
+.reviewCard .reviewOwnerActions button { color: #e6b5ed; font-size: 11px; padding: 8px; }
+.reviewCard .reviewOwnerActions button:hover { background: #3d1349; }
+.reviewCard .reviewPhotosStatus { color: #c4abce; }
+@media (max-width: 991px) { .resenasContenido .reviewsList, .reviewsPage .reviewsList { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 576px) { .resenasContenido .reviewsList, .reviewsPage .reviewsList { grid-template-columns: 1fr; gap: 18px; } }
+/* Tarjetas ampliadas y fotos con margen interior */
+.resenasContenido .reviewsList, .reviewsPage .reviewsList { grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr)); gap: 24px; }
+.reviewCard .reviewHead { padding: 24px 24px 0; }
+.reviewHead > div { flex: 1; min-width: 0; }
+.reviewGoogleBadge { display: block; flex: 0 0 24px; width: 24px; height: 24px; margin-left: auto; }
+.reviewHead h3, .reviewsPage .reviewHead h3 { font-size: 16px; }
+.reviewHead time { font-size: 12px; }
+.reviewAvatar { width: 46px; height: 46px; }
+.reviewCard .reviewStars { margin: 18px 24px 12px; font-size: 23px; }
+.reviewCard .reviewComment, .reviewsPage .reviewComment { margin: 0 24px 24px; font-size: 16px; line-height: 1.7; }
+.reviewCard .reviewCardPhotos, .reviewsPage .reviewCardPhotos { width: calc(100% - 32px); margin: 0 16px 16px; gap: 6px; }
+.reviewCardPhotos .reviewPhotoThumb { border-radius: 8px; }
+.reviewCard .reviewExpandLink { padding: 16px 24px; font-size: 13px; }
+@media (max-width: 576px) {
+    .resenasContenido .reviewsList, .reviewsPage .reviewsList { grid-template-columns: 1fr; }
+    .reviewCard .reviewHead { padding: 22px 20px 0; }
+    .reviewCard .reviewStars { margin-left: 20px; margin-right: 20px; }
+    .reviewCard .reviewComment { margin-left: 20px; margin-right: 20px; }
 }

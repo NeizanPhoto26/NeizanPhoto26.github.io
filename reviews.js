@@ -332,6 +332,16 @@
         date.textContent = new Date(review.created_at).toLocaleDateString('es-ES', { day: 'numeric', month: 'short', year: 'numeric' });
         identity.append(name, date);
         head.append(avatar, identity);
+        if (config.googleEnabled && avatarUrl) {
+            const google = document.createElement('img');
+            google.className = 'reviewGoogleBadge';
+            google.src = 'img/google-g.svg';
+            google.alt = 'Publicada con una cuenta de Google';
+            google.title = 'Publicada con una cuenta de Google en esta web';
+            google.width = 24;
+            google.height = 24;
+            head.append(google);
+        }
         const stars = document.createElement('p');
         stars.className = 'reviewStars';
         stars.setAttribute('aria-label', `${review.rating} de 5 estrellas`);
@@ -349,31 +359,57 @@
             card.append(expand);
         }
         if (review.photo_count > 0) {
-            const viewPhotos = document.createElement('button');
-            viewPhotos.type = 'button';
-            viewPhotos.className = 'reviewPhotosButton';
-            viewPhotos.textContent = `Ver fotos (${review.photo_count})`;
             const photos = document.createElement('div');
-            photos.className = 'reviewPhotos';
-            viewPhotos.addEventListener('click', async () => {
-                viewPhotos.disabled = true;
+            photos.className = 'reviewPhotos reviewCardPhotos';
+            photos.dataset.count = String(Math.min(3, review.photo_count));
+            photos.setAttribute('aria-busy', 'true');
+            const status = document.createElement('p');
+            status.className = 'reviewPhotosStatus';
+            status.textContent = 'Cargando fotos…';
+            const retry = document.createElement('button');
+            retry.type = 'button';
+            retry.className = 'reviewPhotosButton';
+            retry.textContent = 'Reintentar cargar fotos';
+            retry.hidden = true;
+            photos.append(status);
+            const loadPhotos = async () => {
+                retry.hidden = true;
+                photos.setAttribute('aria-busy', 'true');
+                status.textContent = 'Cargando fotos…';
                 try {
                     const [row] = await request(`reviews?select=photos&id=eq.${review.id}&approved=eq.true`);
-                    const images = (row?.photos || []).filter(src => /^data:image\/jpeg;base64,[A-Za-z0-9+/]+={0,2}$/.test(src));
+                    const images = (row?.photos || []).filter(src => /^data:image\/jpeg;base64,[A-Za-z0-9+/]+={0,2}$/.test(src)).slice(0, 3);
+                    photos.replaceChildren();
+                    photos.dataset.count = String(images.length);
                     images.forEach((src, index) => {
+                        const button = document.createElement('button');
+                        button.type = 'button';
+                        button.className = 'reviewPhotoThumb';
+                        button.setAttribute('aria-label', `Ampliar foto ${index + 1} de la reseña de ${review.name}`);
                         const image = document.createElement('img');
-                        image.src = src; image.alt = `Foto ${index + 1} de la reseña de ${review.name}`;
+                        image.src = src;
+                        image.alt = `Foto ${index + 1} de la reseña de ${review.name}`;
                         image.decoding = 'async';
-                        image.addEventListener('click', () => openReviewPhoto(images, index, review.name));
-                        photos.append(image);
+                        button.addEventListener('click', () => openReviewPhoto(images, index, review.name));
+                        button.append(image);
+                        photos.append(button);
                     });
-                    viewPhotos.hidden = true;
                 } catch {
-                    viewPhotos.textContent = 'Reintentar cargar fotos';
-                    viewPhotos.disabled = false;
-                }
-            });
-            card.append(viewPhotos, photos);
+                    status.textContent = 'No se pudieron cargar las fotos.';
+                    retry.hidden = false;
+                } finally { photos.setAttribute('aria-busy', 'false'); }
+            };
+            retry.addEventListener('click', loadPhotos);
+            card.append(photos, retry);
+            if ('IntersectionObserver' in window) {
+                const observer = new IntersectionObserver(entries => {
+                    if (entries.some(entry => entry.isIntersecting)) {
+                        observer.disconnect();
+                        loadPhotos();
+                    }
+                }, { rootMargin: '200px' });
+                observer.observe(card);
+            } else loadPhotos();
         }
         const owner = accountOwned.has(review.id) ? { id: review.id, token: '' } : (config.googleEnabled ? null : owned[review.id]);
         if (validOwner(owner)) {

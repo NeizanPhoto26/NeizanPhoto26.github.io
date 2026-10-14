@@ -15,7 +15,7 @@
     <!-- Open Graph (para redes) -->
     <meta property="og:title" content="Neizan Photo 26 - Fotografía y vídeo de vehículos y deportes">
     <meta property="og:description" content="Sesiones de foto y vídeo para coches, motos, fútbol y eventos en Tarragona.">
-    <meta property="og:image" content="https://neizanphoto26.github.io/img/logos/LogoNeizanPhoto.png">
+    <meta property="og:image" content="https://neizanphoto26.github.io/img/optimized/logos-LogoNeizanPhoto-256.png">
     <meta property="og:url" content="https://neizanphoto26.github.io/">
     <meta property="og:type" content="website">
     <meta property="og:site_name" content="Neizan Photo 26">
@@ -25,7 +25,7 @@
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Neizan Photo 26 - Fotografía y vídeo de vehículos y deportes">
     <meta name="twitter:description" content="Sesiones de foto y vídeo para coches, motos, fútbol y eventos en Tarragona.">
-    <meta name="twitter:image" content="https://neizanphoto26.github.io/img/logos/LogoNeizanPhoto.png">
+    <meta name="twitter:image" content="https://neizanphoto26.github.io/img/optimized/logos-LogoNeizanPhoto-256.png">
 
     <!-- Bootstrap -->
     <link
@@ -40,7 +40,7 @@
       "@type": "ProfessionalService",
       "@id": "https://neizanphoto26.github.io#neizanphoto26",
       "name": "Neizan Photo 26",
-      "image": "https://neizanphoto26.github.io/img/logos/LogoNeizanPhoto.png",
+      "image": "https://neizanphoto26.github.io/img/optimized/logos-LogoNeizanPhoto-256.png",
       "url": "https://neizanphoto26.github.io",
       "description": "Fotografía y vídeo de vehículos, deportes y eventos.",
       "telephone": "+34 682 402 371",
@@ -60,8 +60,8 @@
       ]}
     </script>
 
-    <link rel="stylesheet" href="Style.css?v=20261014-logo2">
-    <link rel="icon" href="img/logos/LogoNeizanPhoto.png" type="image/png">
+    <link rel="stylesheet" href="Style.css?v=20261015-reviews-privacy">
+    <link rel="icon" href="img/optimized/logos-LogoNeizanPhoto-256.png" type="image/png">
 </head>
 
 <body>
@@ -338,10 +338,10 @@
     <!-- BANNER COOKIES -->
     <div id="cookie-banner" class="cookie-banner">
         <p>
-            Este sitio utiliza cookies técnicas para mejorar la experiencia de navegación.
-            <a href="Privacidad.html">Más información</a>.
+            Usamos almacenamiento del navegador para recordar este aviso y mantener tu sesión, si inicias sesión.
+            <a href="Privacidad.html#cookies">Más información</a>.
         </p>
-        <button id="cookie-accept">Aceptar</button>
+        <button id="cookie-accept" type="button">Entendido</button>
     </div>
 
     <div class="lightbox" id="lightbox" aria-hidden="true" role="dialog" aria-label="Visor de imágenes">
@@ -359,12 +359,11 @@
         const banner = document.getElementById('cookie-banner');
         const btnAccept = document.getElementById('cookie-accept');
 
-        if (!localStorage.getItem('cookiesAceptadas')) {
-            banner.style.display = 'flex';
-        }
-
+        let noticeDismissed = false;
+        try { noticeDismissed = localStorage.getItem('cookiesAceptadas') === 'true'; } catch { /* El aviso funciona aunque se bloquee el almacenamiento. */ }
+        banner.style.display = noticeDismissed ? 'none' : 'flex';
         btnAccept.addEventListener('click', () => {
-            localStorage.setItem('cookiesAceptadas', 'true');
+            try { localStorage.setItem('cookiesAceptadas', 'true'); } catch { /* Solo se recordará en esta visita. */ }
             banner.style.display = 'none';
         });
     </script>
@@ -441,6 +440,6 @@
     <script src="site-ui.js" defer></script>
     <script src="reviews-config.js" defer></script>
     <script src="review-auth.js" defer></script>
-    <script src="reviews.js" defer></script>
+    <script src="reviews.js?v=20261015-reviews" defer></script>
 </body>
 </html>
